@@ -88,7 +88,7 @@ class TushareApi(object):
         data = self.pro.trade_cal(start_date=start_date, is_open='1')
         return list(self.dataframe_to_dict(data,'cal_date').keys())
 
-    # 获取股票的日线行情
+    # 获取日线行情
     def get_stock_daily(self, ts_code='', trade_date='', start_date='') -> dict:
         """
         获取股票的日线行情
@@ -99,8 +99,25 @@ class TushareApi(object):
             Examples
             --------
             >>> .get_stock_daily(ts_code='000001.SZ', trade_date='20191231')
-            '000001.SZ': {'ts_code': '000001.SZ',  # 股票代码
-                            'trade_date': '20191231', # 交易日期
+            {'000001.SZ': {'trade_date': '20191231',  # 交易日期
+                            'pct_change': -0.72,      # 涨跌幅
+                            'close': 16.45,           # 收盘价
+                            'change': -0.12,          # 涨跌额
+                            'open': 16.57,            # 开盘价
+                            'high': 16.63,            # 最高价
+                            'low': 16.31,             # 最低价
+                            'pre_close': 16.57,       # 昨收价
+                            'vol_ratio': 1.08,        # 成交量比
+                            'turn_over': 0.36,        # 换手率
+                            'swing': 1.93,            # 振幅
+                            'vol': 704442.0,          # 成交量
+                            'amount': 1154704384.0,   # 成交额
+                            'selling': 323640.0,      # 卖出量
+                            'buying': 380802.0,       # 买入量
+                            'strength': -1.35,        # 强弱指数
+                            'activity': 4539.0,       #活跃度
+                            'avg_turnover': 0.0,      # 笔换手
+                            'attack': 0.86}}          # 攻击波
 
         """
         data = self.pro.bak_daily(ts_code=ts_code, trade_date=trade_date, start_date=start_date, 
@@ -110,7 +127,8 @@ class TushareApi(object):
         else:
             data = self.dataframe_to_dict(data,'ts_code')
         return data
-    # 获取股票的进阶信息
+    
+    # 获取进阶信息
     def get_single_stock_advanced_info(self,ts_code='',trade_date='',start_date='') -> dict:
         """
         获取股票的进阶信息
@@ -147,7 +165,7 @@ class TushareApi(object):
             data = self.dataframe_to_dict(data,'ts_code')
         return data
     
-    # 获取股票的资金流动情况
+    # 获取资金流动情况
     def get_stock_moneyflow(self,ts_code='',trade_date='',start_date='',end_date='') -> dict:
         """
         获取股票的资金流动情况
@@ -186,8 +204,9 @@ class TushareApi(object):
             data = self.dataframe_to_dict(data,'ts_code')
         return self.dataframe_to_dict(data,'ts_code')
     
+    # 获取每日筹码分布
 if __name__ == '__main__':
     api = TushareApi()
     api.get_all_stock_basic_info()
-    print(api.get_all_stock_info())
+    print()
     
