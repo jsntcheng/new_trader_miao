@@ -98,13 +98,13 @@ class TushareApi(object):
         return list(self.get_all_stock_basic_info().keys())
 
     # 获取所有交易日期
-    def get_all_trade_date(self,start_date=None):
+    def get_all_trade_date(self,start_date=None,end_date='') -> list:
         """
         获取所有交易日期
         """
         if start_date == None:
             start_date = self.start_date
-        data = self._pro.trade_cal(start_date=start_date, is_open='1')
+        data = self._pro.trade_cal(start_date=start_date, end_date=end_date, is_open='1')
         return list(self.dataframe_to_dict(data,'cal_date').keys())
 
     # 获取日线行情
@@ -222,7 +222,7 @@ class TushareApi(object):
             data = self.dataframe_to_dict(data,'trade_date')
         else:
             data = self.dataframe_to_dict(data,'ts_code')
-        return self.dataframe_to_dict(data,'ts_code')
+        return data
     
     # 获取筹码分布（单次最大2000条，5000积分每天20000次）
     def get_chip_distribution(self, ts_code='',trade_date='', start_date='', end_date='') -> list:
@@ -234,8 +234,7 @@ class TushareApi(object):
 
     # 获取筹码及胜率(单次最大5000条，5000积分每天20000次)
     def get_chip_winrate(self, ts_code='',trade_date='', start_date='', end_date='') -> dict:
-        data = self._pro._pro.cyq_perf(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
-        self.get_count['chip_winrate'] += 1
+        data = self._pro.cyq_perf(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
         if not trade_date:
             data = self.dataframe_to_dict(data,'trade_date')
         else:
@@ -245,7 +244,6 @@ class TushareApi(object):
     # 获取技术面因子
     def get_factor(self, ts_code='',trade_date='', start_date='', end_date='') -> dict:
         data = self._pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date)
-        self.get_count['factor'] += 1
         if not trade_date:
             data = self.dataframe_to_dict(data,'trade_date')
         else:
