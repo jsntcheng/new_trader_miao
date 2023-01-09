@@ -1,11 +1,10 @@
+from data_api.tushare_api import TushareApi
 import sys
 import os
 
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
 sys.path.append(rootPath)
-
-from data_api.tushare_api import TushareApi
 
 
 class Daily(object):
@@ -30,7 +29,8 @@ class Daily(object):
 
     def get_single_daily(self, ts_code, trade_date):
         stock_daily = self.tushare.get_stock_daily(ts_code, trade_date)
-        advanced_info = self.tushare.get_stock_advanced_info(ts_code, trade_date)
+        advanced_info = self.tushare.get_stock_advanced_info(
+            ts_code, trade_date)
         moneyflow = self.tushare.get_stock_moneyflow(ts_code, trade_date)
         chip_winrate = self.tushare.get_chip_winrate(ts_code, trade_date)
         factor = self.tushare.get_factor(ts_code, trade_date)
