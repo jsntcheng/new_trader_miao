@@ -1,0 +1,141 @@
+2023-04-27 17:31:30.631 | ERROR    | __mp_main__:run_yes_normal:103 - 000001平安银行||时间：20230426||更新失败,失败原因
+2023-04-27 17:31:31.656 | ERROR    | __mp_main__:run_yes_normal:103 - 000002万科A||时间：20230426||更新失败,失败原因
+2023-04-27 17:31:31.688 | ERROR    | __mp_main__:run_yes_normal:103 - 000004ST国华||时间：20230426||更新失败,失败原因
+2023-04-27 17:32:46.954 | ERROR    | __mp_main__:run_yes_normal:103 - 000001平安银行||时间：20230426||更新失败,失败原因
+2023-04-27 17:32:47.332 | ERROR    | __mp_main__:run_yes_normal:103 - 000004ST国华||时间：20230426||更新失败,失败原因
+2023-04-27 17:32:47.838 | ERROR    | __mp_main__:run_yes_normal:103 - 000002万科A||时间：20230426||更新失败,失败原因
+2023-04-27 17:34:10.088 | ERROR    | multiprocessing.pool:worker:125 - An error has been caught in function 'worker', process 'SpawnPoolWorker-2' (3724), thread 'MainThread' (2160):
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 352
+               │     └ 3
+               └ <function _main at 0x000002C4D61050D0>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 129, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 352
+           │    └ <function BaseProcess._bootstrap at 0x000002C4D6045E50>
+           └ <SpawnProcess name='SpawnPoolWorker-2' parent=17288 started daemon>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 315, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x000002C4D60454C0>
+    └ <SpawnProcess name='SpawnPoolWorker-2' parent=17288 started daemon>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <SpawnProcess name='SpawnPoolWorker-2' parent=17288 started daemon>
+    │    │        │    └ (<multiprocessing.queues.SimpleQueue object at 0x000002C4D633EA00>, <multiprocessing.queues.SimpleQueue object at 0x000002C4E...
+    │    │        └ <SpawnProcess name='SpawnPoolWorker-2' parent=17288 started daemon>
+    │    └ <function worker at 0x000002C4EA731700>
+    └ <SpawnProcess name='SpawnPoolWorker-2' parent=17288 started daemon>
+
+> File "C:\ProgramData\Anaconda3\lib\multiprocessing\pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    │     │       └ {}
+                    │     └ ('000002.SZ',)
+                    └ <function run_yes_normal at 0x000002C4E9E058B0>
+
+  File "c:\Users\69462\Desktop\自有项目\new_trader_miao\tasks\daily.py", line 100, in run_yes_normal
+    df.to_sql(table_name, conn, if_exists='append', index=False)
+    │  │      └ '000002万科A'
+    │  └ <function NDFrame.to_sql at 0x000002C4E8400430>
+    └        交易日期   涨跌幅   收盘价   涨跌额   开盘价    最高价    最低价    昨收价  成交量比  ...  15分位成本  50分位成本  85分位成本  95分位成本  加权平均成本   胜率  成本价格  价格占比（...
+
+NameError: name 'conn' is not defined
+2023-04-27 17:34:10.091 | ERROR    | multiprocessing.pool:worker:125 - An error has been caught in function 'worker', process 'SpawnPoolWorker-4' (9112), thread 'MainThread' (17476):
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 360
+               │     └ 3
+               └ <function _main at 0x00000278855E50D0>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 129, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 360
+           │    └ <function BaseProcess._bootstrap at 0x0000027885545E50>
+           └ <SpawnProcess name='SpawnPoolWorker-4' parent=17288 started daemon>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 315, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x00000278855454C0>
+    └ <SpawnProcess name='SpawnPoolWorker-4' parent=17288 started daemon>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <SpawnProcess name='SpawnPoolWorker-4' parent=17288 started daemon>
+    │    │        │    └ (<multiprocessing.queues.SimpleQueue object at 0x000002788581EA00>, <multiprocessing.queues.SimpleQueue object at 0x000002789...
+    │    │        └ <SpawnProcess name='SpawnPoolWorker-4' parent=17288 started daemon>
+    │    └ <function worker at 0x0000027899C38700>
+    └ <SpawnProcess name='SpawnPoolWorker-4' parent=17288 started daemon>
+
+> File "C:\ProgramData\Anaconda3\lib\multiprocessing\pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    │     │       └ {}
+                    │     └ ('000001.SZ',)
+                    └ <function run_yes_normal at 0x00000278992E48B0>
+
+  File "c:\Users\69462\Desktop\自有项目\new_trader_miao\tasks\daily.py", line 100, in run_yes_normal
+    df.to_sql(table_name, conn, if_exists='append', index=False)
+    │  │      └ '000001平安银行'
+    │  └ <function NDFrame.to_sql at 0x00000278978E0430>
+    └        交易日期  涨跌幅    收盘价   涨跌额    开盘价    最高价    最低价    昨收价  成交量比  ...  15分位成本  50分位成本  85分位成本  95分位成本  加权平均成本     胜率   成本价格  价...
+
+NameError: name 'conn' is not defined
+2023-04-27 17:34:11.082 | ERROR    | multiprocessing.pool:worker:125 - An error has been caught in function 'worker', process 'SpawnPoolWorker-5' (23080), thread 'MainThread' (24012):
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 332
+               │     └ 3
+               └ <function _main at 0x00000247F41550D0>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\spawn.py", line 129, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 332
+           │    └ <function BaseProcess._bootstrap at 0x00000247F40B5E50>
+           └ <SpawnProcess name='SpawnPoolWorker-5' parent=17288 started daemon>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 315, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x00000247F40B54C0>
+    └ <SpawnProcess name='SpawnPoolWorker-5' parent=17288 started daemon>
+
+  File "C:\ProgramData\Anaconda3\lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <SpawnProcess name='SpawnPoolWorker-5' parent=17288 started daemon>
+    │    │        │    └ (<multiprocessing.queues.SimpleQueue object at 0x00000247F438EA00>, <multiprocessing.queues.SimpleQueue object at 0x000002478...
+    │    │        └ <SpawnProcess name='SpawnPoolWorker-5' parent=17288 started daemon>
+    │    └ <function worker at 0x00000247887BA700>
+    └ <SpawnProcess name='SpawnPoolWorker-5' parent=17288 started daemon>
+
+> File "C:\ProgramData\Anaconda3\lib\multiprocessing\pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    │     │       └ {}
+                    │     └ ('000004.SZ',)
+                    └ <function run_yes_normal at 0x0000024787E438B0>
+
+  File "c:\Users\69462\Desktop\自有项目\new_trader_miao\tasks\daily.py", line 100, in run_yes_normal
+    df.to_sql(table_name, conn, if_exists='append', index=False)
+    │  │      └ '000004ST国华'
+    │  └ <function NDFrame.to_sql at 0x0000024786440430>
+    └        交易日期   涨跌幅    收盘价   涨跌额    开盘价    最高价   最低价    昨收价  成交量比  ...  15分位成本  50分位成本  85分位成本  95分位成本  加权平均成本     胜率   成本价格  价...
+
+NameError: name 'conn' is not defined
+2023-04-27 17:35:28.877 | INFO     | __mp_main__:run_yes_normal:103 - 000001平安银行||时间：20230426||更新完成
+2023-04-27 17:35:28.878 | INFO     | __mp_main__:run_yes_normal:103 - 000004ST国华||时间：20230426||更新完成
+2023-04-27 17:35:28.896 | INFO     | __mp_main__:run_yes_normal:103 - 000002万科A||时间：20230426||更新完成

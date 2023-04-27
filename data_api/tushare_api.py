@@ -13,18 +13,15 @@ class TushareApi(object):
     def __init__(self) -> None:
         super().__init__()
         parent_dir = os.path.dirname(os.path.abspath(__file__))
-        logger.add(f"{__file__}", format="{time} {level} {message}", level="INFO")
-        logger.add('tushare.log')
         self.config = configparser.ConfigParser()
         self.config.read(parent_dir + '/config.ini', encoding='utf-8')
         self.pro = ts.pro_api(self.config.get('tushare', 'token'))
-        self._pro = ts.pro_api(self.config.get('tushare', 'token'))
-        self._default_days = self.config.getint('tushare', 'default_days')
-        self.start_date = self.get_date(self._default_days)
+        self.default_days = self.config.getint('tushare', 'default_days')
+        self.start_date = self.get_date(self.default_days)
         self.trade_date = self.get_all_trade_date
         self.all_ts_code = self.get_all_stock_ts_code
         self.get_count = self.init_get_count()
-
+        self.all_info = self.get_all_stock_basic_info()
     @staticmethod
     def init_get_count():
         return {'all_stock_basic_info': 0,
@@ -96,7 +93,7 @@ class TushareApi(object):
                           'industry': '银行',   # 所属行业
                           'list_date': '19910403'}# 上市日期
         """
-        data = self._pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
+        data = self.pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
         data = self.dataframe_to_dict(data, 'ts_code')
         for symbol in data:
             data[symbol] = self.reset_dict_key(data[symbol],
@@ -115,7 +112,7 @@ class TushareApi(object):
         """
         if start_date == None:
             start_date = self.start_date
-        data = self._pro.trade_cal(start_date=start_date, end_date=end_date, is_open='1')
+        data = self.pro.trade_cal(start_date=start_date, end_date=end_date, is_open='1')
         return list(self.dataframe_to_dict(data, 'cal_date').keys())
 
     # 获取日线行情
@@ -150,7 +147,7 @@ class TushareApi(object):
                             'attack': 0.86}}          # 攻击波
 
         """
-        data = self._pro.bak_daily(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date,
+        data = self.pro.bak_daily(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date,
                                    fields='ts_code,trade_date,pct_change,close,change,open,high,low,pre_close,vol_ratio,turn_over,swing,vol,amount,selling,buying,strength,activity,avg_turnover,attack')
         if not trade_date:
             data = self.dataframe_to_dict(data, 'trade_date')
@@ -188,7 +185,7 @@ class TushareApi(object):
                            'holder_num': 354508.0}       # 股东人数
                            }
         """
-        data = self._pro.bak_basic(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date,
+        data = self.pro.bak_basic(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date,
                                    fields='ts_code,trade_date,pe,float_share,total_share,total_assets,liquid_assets,fixed_assets,reserved,reserved_pershare,eps,bvps,pb,undp,per_undp,rev_yoy,profit_yoy,gpr,npr,holder_num')
         if not trade_date:
             data = self.dataframe_to_dict(data, 'trade_date')
@@ -228,7 +225,7 @@ class TushareApi(object):
                             'net_mf_vol': -109975,       # 净流入量（手）
                             'net_mf_amount': -13500.38}}"# 净流入额（万元）
         """
-        data = self._pro.moneyflow(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
+        data = self.pro.moneyflow(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
         self.get_count['stock_moneyflow'] += 1
         if not trade_date:
             data = self.dataframe_to_dict(data, 'trade_date')
@@ -240,13 +237,16 @@ class TushareApi(object):
     def get_chip_distribution(self, ts_code='', trade_date='', start_date='', end_date='') -> list:
         if self.get_count['chip_distribution'] >= 20000:
             logger.info('获取筹码分布超过限制，请稍后再试')
-        data = self._pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
+        data = self.pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
         self.get_count['chip_distribution'] += 1
-        return self.dataframe_to_list(data)
+        data = self.dataframe_to_list(data)
+        for index,item in enumerate(data):
+            data[index] = item[2:]
+        return data
 
     # 获取筹码及胜率(单次最大5000条，5000积分每天20000次)
     def get_chip_winrate(self, ts_code='', trade_date='', start_date='', end_date='') -> dict:
-        data = self._pro.cyq_perf(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
+        data = self.pro.cyq_perf(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
         if not trade_date:
             data = self.dataframe_to_dict(data, 'trade_date')
         else:
@@ -255,7 +255,7 @@ class TushareApi(object):
 
     # 获取技术面因子
     def get_factor(self, ts_code='', trade_date='', start_date='', end_date='') -> dict:
-        data = self._pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date)
+        data = self.pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date)
         if not trade_date:
             data = self.dataframe_to_dict(data, 'trade_date')
         else:
