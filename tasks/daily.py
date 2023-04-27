@@ -129,7 +129,7 @@ def run_first(ts_code,table_name):
 
 if __name__ == "__main__":
     p = Pool()
-    for code in daily.all_ts_code[:3]:
+    for code in daily.all_ts_code[]:
         p.apply_async(run_yes_normal,(code,))
     p.close()
     p.join()
