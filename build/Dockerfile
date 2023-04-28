@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 ARG build_deps="apt-utils \
-                vim \
+                nano \
                 curl \
                 bash \
                 sudo \
