@@ -1,5 +1,6 @@
 # new_trader_miao
 一种奇特的赚钱机器，名叫喵喵交易员
+![miao!](./miao.png)
 # 目录结构
 - build docker镜像构建
 - data_api 数据接口封装
