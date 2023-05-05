@@ -6,6 +6,7 @@ import os
 import pandas as pd
 from loguru import logger
 import schedule
+from time import sleep
 
 location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 log_file_path = os.path.join(location,f'logs/daily_task.log')
@@ -120,6 +121,12 @@ def daily_task():
         p.close()
         p.join()
 
+def handle_task(date):
+    p = Pool(3)
+    for code in daily.all_ts_code:
+        p.apply_async(run_normal, args=(code, date))
+    p.close()
+    p.join()
 
 def run_first(ts_code,table_name):
 
@@ -147,3 +154,11 @@ def run_first(ts_code,table_name):
 
 if __name__ == "__main__":
     schedule.every().day.at("19:00").do(daily_task)
+    task_no = int(input("请输入任务编号：1：每日任务，2：手动任务"))
+    if task_no == 1:
+        while True:
+            schedule.run_pending()
+            sleep(1)
+    elif task_no == 2:
+        date = input("请输入日期：")
+        handle_task(date)
