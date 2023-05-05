@@ -79,5 +79,5 @@ if __name__ == '__main__':
     #     schedule.run_pending()
     #     sleep(1)
     ts_code = input('请输入股票代码：\n')
-    back_days = input('请输入回推天数：\n')
+    back_days = int(input('请输入回推天数：\n'))
     SingleStock(ts_code,back_days).get_stock_data()
