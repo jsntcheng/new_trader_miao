@@ -7,6 +7,7 @@ import pandas as pd
 from loguru import logger
 import schedule
 from time import sleep
+from tasks.basic import StockBasic
 
 location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 log_file_path = os.path.join(location,f'logs/daily_task.log')
@@ -45,32 +46,10 @@ reset_dict = {'trade_date': '交易日期', 'buy_sm_vol': '小单买入量（手
 
 
 
-class Daily(object):
+class Daily(StockBasic):
     def __init__(self):
-        self.tushare = TushareApi()
-        self.now_date = self.get_now_date()
-        self.yes_date = self.get_yes_date()
-        self.trade_dates = self.get_trade_date()
-        self.all_ts_code = self.get_all_ts_code()
-
-    def get_now_date(self):
-        return self.tushare.get_date()
-
-    def check_trade_date(self):
-        if self.now_date in self.trade_dates:
-            return True
-        else:
-            return False
-
-    def get_yes_date(self):
-        return self.tushare.get_date(1)
-
-    def get_trade_date(self):
-        return self.tushare.trade_date
-
-    def get_all_ts_code(self):
-        return self.tushare.all_ts_code
-
+        StockBasic.__init__(self)
+        
     def get_single_daily_normal(self, ts_code, trade_date):
         stock_daily = self.tushare.get_stock_daily(ts_code, trade_date)
         advanced_info = self.tushare.get_stock_advanced_info(
@@ -78,25 +57,19 @@ class Daily(object):
         moneyflow = self.tushare.get_stock_moneyflow(ts_code, trade_date)
         chip_winrate = self.tushare.get_chip_winrate(ts_code, trade_date)
         chip_distribute = self.tushare.get_chip_distribution(
-            ts_code, trade_date)
-        factor = self.tushare.get_factor(ts_code, trade_date)
+            ts_code, trade_date)[self.now_date]
+        # factor = self.tushare.get_factor(ts_code, trade_date)
 
         sum = {}
         sum.update(stock_daily[ts_code])
         sum.update(advanced_info[ts_code])
         sum.update(moneyflow[ts_code])
         sum.update(chip_winrate[ts_code])
-        sum.update(factor[ts_code])
+        # sum.update(factor[ts_code])
         sum = self.tushare.reset_dict_key(sum, reset_dict)
         sum['筹码分布(价格，占比)'] = str(chip_distribute)
         del sum['未知']
         return sum
-
-    def get_table_name(self, ts_code):
-        return self.tushare.all_info[ts_code]['股票代码']+self.tushare.all_info[ts_code]['股票名称']
-
-    def symbol_start_date(self, ts_code):
-        return str(max(int(self.tushare.all_info[ts_code]['上市日期']), int(start)))
 
 
 daily = Daily()

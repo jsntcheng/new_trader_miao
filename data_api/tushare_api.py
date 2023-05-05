@@ -235,14 +235,21 @@ class TushareApi(object):
 
     # 获取筹码分布（单次最大2000条，5000积分每天20000次）
     def get_chip_distribution(self, ts_code='', trade_date='', start_date='', end_date='') -> list:
-        if self.get_count['chip_distribution'] >= 20000:
-            logger.info('获取筹码分布超过限制，请稍后再试')
         data = self.pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date, end_date=end_date)
         self.get_count['chip_distribution'] += 1
         data = self.dataframe_to_list(data)
-        for index,item in enumerate(data):
-            data[index] = item[2:]
-        return data
+        # 结构化数据
+        remix_data = {}
+        for item in data:
+            if not remix_data.get(item[1]):
+                remix_data[item[1]] = []
+            remix_data[item[1]].append(item[2:])
+        # 数据不全，需要分段请求
+        if start_date:
+            early_date = min(list(remix_data.keys()))
+            if early_date != start_date:
+                remix_data.update(self.get_chip_distribution(ts_code=ts_code, start_date=start_date, end_date=self.trade_date[self.trade_date.index(early_date)+1]))
+        return remix_data
 
     # 获取筹码及胜率(单次最大5000条，5000积分每天20000次)
     def get_chip_winrate(self, ts_code='', trade_date='', start_date='', end_date='') -> dict:
@@ -253,17 +260,19 @@ class TushareApi(object):
             data = self.dataframe_to_dict(data, 'ts_code')
         return data
 
-    # 获取技术面因子
-    def get_factor(self, ts_code='', trade_date='', start_date='', end_date='') -> dict:
-        data = self.pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date)
-        if not trade_date:
-            data = self.dataframe_to_dict(data, 'trade_date')
-        else:
-            data = self.dataframe_to_dict(data, 'ts_code')
-        return data
+    # 获取技术面因子(废弃)
+    # def get_factor(self, ts_code='', trade_date='', start_date='', end_date='') -> dict:
+    #     data = self.pro.cyq_chips(ts_code=ts_code, trade_date=trade_date, start_date=start_date)
+    #     if not trade_date:
+    #         data = self.dataframe_to_dict(data, 'trade_date')
+    #     else:
+    #         data = self.dataframe_to_dict(data, 'ts_code')
+    #     return data
 
 
 if __name__ == '__main__':
     api = TushareApi()
     api.get_all_stock_basic_info()
+    code = "000301.SZ"
+    api.get_chip_distribution(ts_code=code,start_date='20200101')
     print()
