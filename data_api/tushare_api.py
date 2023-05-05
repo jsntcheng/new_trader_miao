@@ -18,8 +18,8 @@ class TushareApi(object):
         self.pro = ts.pro_api(self.config.get('tushare', 'token'))
         self.default_days = self.config.getint('tushare', 'default_days')
         self.start_date = self.get_date(self.default_days)
-        self.trade_date = self.get_all_trade_date
-        self.all_ts_code = self.get_all_stock_ts_code
+        self.trade_date = self.get_all_trade_date()
+        self.all_ts_code = self.get_all_stock_ts_code()
         self.get_count = self.init_get_count()
         self.all_info = self.get_all_stock_basic_info()
     @staticmethod
