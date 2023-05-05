@@ -5,6 +5,7 @@ import sys
 import os
 import pandas as pd
 from loguru import logger
+import schedule
 
 location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 log_file_path = os.path.join(location,f'logs/daily_task.log')
@@ -54,14 +55,20 @@ class Daily(object):
     def get_now_date(self):
         return self.tushare.get_date()
 
+    def check_trade_date(self):
+        if self.now_date in self.trade_dates:
+            return True
+        else:
+            return False
+
     def get_yes_date(self):
         return self.tushare.get_date(1)
 
     def get_trade_date(self):
-        return self.tushare.get_all_trade_date(self.yes_date, self.now_date)
+        return self.tushare.trade_date
 
     def get_all_ts_code(self):
-        return self.tushare.get_all_stock_ts_code()
+        return self.tushare.all_ts_code
 
     def get_single_daily_normal(self, ts_code, trade_date):
         stock_daily = self.tushare.get_stock_daily(ts_code, trade_date)
@@ -93,15 +100,26 @@ class Daily(object):
 
 daily = Daily()
 
-# 获取上一天的数据（每日定时0点获取）
+# 获取当天的数据（每日定时19点获取）
 @logger.catch
-def run_yes_normal(code):
-    trade_time = daily.get_yes_date()
+def run_normal(code,date=None):
+    if date:
+        trade_time = date
+    else:
+        trade_time = daily.get_now_date()
     table_name = daily.get_table_name(code)
     df = pd.DataFrame.from_dict([daily.get_single_daily_normal(code, trade_time)])
     df.to_sql(table_name, conn, if_exists='append', index=False)
     logger.info('{}||时间：{}||更新完成'.format(table_name, trade_time))
-    
+
+def daily_task():
+    if daily.check_trade_date():
+        p = Pool(3)
+        for code in daily.all_ts_code:
+            p.apply_async(run_normal, args=(code,))
+        p.close()
+        p.join()
+
 
 def run_first(ts_code,table_name):
 
@@ -128,9 +146,4 @@ def run_first(ts_code,table_name):
 
 
 if __name__ == "__main__":
-    p = Pool(2)
-    for code in daily.all_ts_code:
-        p.apply_async(run_yes_normal,(code,))
-    p.close()
-    p.join()
-
+    schedule.every().day.at("19:00").do(daily_task)
